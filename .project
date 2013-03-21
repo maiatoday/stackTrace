@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>forkmerge</name>
+	<name>stackTrace</name>
 	<comment></comment>
 	<projects>
+		<project>addons</project>
+		<project>libs</project>
+		<project>openFrameworks</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

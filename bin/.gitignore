@@ -1,3 +1,5 @@
 /libs/
 /forkmerge_debug
 /forkmerge
+/stackTrace
+/stackTrace_debug
