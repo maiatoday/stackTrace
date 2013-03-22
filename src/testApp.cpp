@@ -322,19 +322,19 @@ void testApp::update() {
 //--------------------------------------------------------------
 void testApp::draw() {
 
-	people.begin();
-	ofClear(0, 0, 0, 0);
+//	people.begin();
+//	ofClear(0, 0, 0, 0);
 	if (USE_KINECT) {
 //		drawKinect();
 		drawAllUserMask();
 	}
-	people.end();
+//	people.end();
 
-	particlesDormant.begin();
-	ofClear(0, 0, 0, 0);
+//	particlesDormant.begin();
+//	ofClear(0, 0, 0, 0);
 	ofSetColor(255, 255, 255, 100);
 	physics.draw();
-	particlesDormant.end();
+//	particlesDormant.end();
 	if (doVideoWrite) {
 
 #ifdef DO_VIDEO
@@ -350,9 +350,9 @@ void testApp::draw() {
 		saveScreen.grabScreen(0,0,width,height);
 		TIS.saveThreaded(saveScreen);
 #endif
-		particlesDormant.draw(0, 0, width, height);
-		people.draw(0, 0, width, height);
-		particles.draw(0, 0, width, height);
+//		particlesDormant.draw(0, 0);
+//		people.draw(0, 0);
+//		particles.draw(0, 0);
 	}
 
 }

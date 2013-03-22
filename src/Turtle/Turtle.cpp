@@ -120,6 +120,7 @@ void Turtle::popValues()
 
 void Turtle::moveForward()
 {
+	ofPushStyle();
     float newX = x + (cos(ofDegToRad(curAngle))*length);
     float newY = y + (sin(ofDegToRad(curAngle))*length);
 
@@ -131,6 +132,7 @@ void Turtle::moveForward()
     ofLine(x, y, newX, newY);
     x = newX;
     y = newY;
+    ofPopStyle();
 }
 
 void Turtle::turnLeft()
@@ -147,6 +149,7 @@ void Turtle::turnRight()
 
 void Turtle::drawVerString()
 {
+	ofPushStyle();
     labelBuildString = labelString;
     char bb[8];
     snprintf(bb, 8, "_%d", buildNumber);
@@ -154,5 +157,6 @@ void Turtle::drawVerString()
     ofSetColor(bsodColor.r,bsodColor.g,bsodColor.b, bsodColor.a*fadeFactor);
     if ((pMyFont) && (length >= MAX_L_LENGTH)) pMyFont->drawString(labelBuildString, x+5,y+5);
     buildNumber++;
+    ofPopStyle();
 
 }

@@ -39,6 +39,10 @@ public:
     void setGlyph(ofImage* _pnewglyph);
     void setBlankGlyph(ofImage* _pnewglyph);
     void setMainStream(bool _isMain) {mainStream = _isMain;};
+    void	drawDormant();
+    void	drawBranches();
+    void	drawTails();
+    void	drawText();
 protected:
 private:
     ofTrueTypeFont* pMyFont;
