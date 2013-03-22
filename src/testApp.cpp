@@ -641,9 +641,9 @@ void testApp::drawAllUserMask() {
 	float coin = ofRandom(0.0, 1.0);
 	ofPushStyle();
 	if (coin < 0.92) {
-		ofSetColor(50, 50, 50, 50);
+		ofSetColor(50, 50, 50, 128);
 	} else {
-		ofSetColor(0, 10, 145, 80);
+		ofSetColor(0, 10, 145, 128);
 	}
 	ofPushMatrix();
 //	glEnable(GL_BLEND);
