@@ -3,3 +3,4 @@ ofxNetwork
 ofxOpenCv
 ofxObjCPointer
 ofxMSAPhysics
+ofxOpenNI
