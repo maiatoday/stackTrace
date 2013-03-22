@@ -258,6 +258,7 @@ void testApp::setup() {
 	ofSetFullscreen(fullscreen);
 	ofHideCursor();
 	setScreenRatios();
+	ofEnableAlphaBlending();
 
 // font needs to be loaded before the particles are created because they all use it to draw
 	myFont.loadFont("verdana.ttf", (int) 8 * fromKinectWidth);
@@ -320,7 +321,7 @@ void testApp::update() {
 void testApp::draw() {
 
 	if (USE_KINECT) {
-		drawKinect();
+//		drawKinect();
 		drawAllUserMask();
 	}
 
@@ -548,10 +549,10 @@ void testApp::updateKinect() {
 	if (isTracking && isMasking) {
 		allUserMasks.setFromPixels(recordUser.getUserPixels(), recordUser.getWidth(), recordUser.getHeight(),
 				OF_IMAGE_GRAYSCALE);
-		user1Mask.setFromPixels(recordUser.getUserPixels(1), recordUser.getWidth(), recordUser.getHeight(),
-				OF_IMAGE_GRAYSCALE);
-		user2Mask.setFromPixels(recordUser.getUserPixels(2), recordUser.getWidth(), recordUser.getHeight(),
-				OF_IMAGE_GRAYSCALE);
+//		user1Mask.setFromPixels(recordUser.getUserPixels(1), recordUser.getWidth(), recordUser.getHeight(),
+//				OF_IMAGE_GRAYSCALE);
+//		user2Mask.setFromPixels(recordUser.getUserPixels(2), recordUser.getWidth(), recordUser.getHeight(),
+//				OF_IMAGE_GRAYSCALE);
 	}
 
 }
@@ -581,26 +582,33 @@ void testApp::drawKinect() {
 
 }
 void testApp::drawMasks() {
-	glPushMatrix();
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
-	allUserMasks.draw(640, 0, 640, 480);
-	glDisable(GL_BLEND);
-	glPopMatrix();
-	user1Mask.draw(320, 480, 320, 240);
-	user2Mask.draw(640, 480, 320, 240);
+//	glPushMatrix();
+//	glEnable(GL_BLEND);
+//	glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
+//	allUserMasks.draw(640, 0, 640, 480);
+//	glDisable(GL_BLEND);
+//	glPopMatrix();
+//	user1Mask.draw(320, 480, 320, 240);
+//	user2Mask.draw(640, 480, 320, 240);
 
 }
 
 void testApp::drawAllUserMask() {
+	float coin = ofRandom(0.0, 1.0);
 	ofPushStyle();
-	ofSetColor(255, 255, 255, 80);
-	glPushMatrix();
+	if (coin < 0.92) {
+		ofSetColor(50, 50, 50, 50);
+	} else {
+		ofSetColor(0, 10, 145, 80);
+	}
+	ofPushMatrix();
 //	glEnable(GL_BLEND);
+	ofScale(fromKinectWidth, fromKinectHeight, 0);
 //	glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
-	allUserMasks.draw(0, 0, width, height);
+	allUserMasks.draw(0, 0);
+//	depthRangeMask.draw(0, 0, width, height);
 //	glDisable(GL_BLEND);
-	glPopMatrix();
+	ofPopMatrix();
 	ofPopStyle();
 
 }
