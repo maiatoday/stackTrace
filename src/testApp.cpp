@@ -605,7 +605,7 @@ void testApp::drawAllUserMask() {
 //	glEnable(GL_BLEND);
 	ofScale(fromKinectWidth, fromKinectHeight, 0);
 //	glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
-	allUserMasks.draw(0, 0);
+	allUserMasks.draw(0, 0, 0);
 //	depthRangeMask.draw(0, 0, width, height);
 //	glDisable(GL_BLEND);
 	ofPopMatrix();
