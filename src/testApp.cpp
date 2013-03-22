@@ -244,8 +244,7 @@ void testApp::setup() {
 	ofBackground(0, 0, 0);
 //    ofBackground(255,255,255);
 	ofSetBackgroundAuto(true);
-	ofEnableAlphaBlending();
-	ofSetWindowPosition(ofGetScreenWidth() - ofGetWidth() - 20, 20);
+//	ofSetWindowPosition(ofGetScreenWidth() - ofGetWidth() - 20, 20);
 
 //#ifndef NO_KINECT
 //    oni.setup();
@@ -259,6 +258,9 @@ void testApp::setup() {
 	ofHideCursor();
 	setScreenRatios();
 	ofEnableAlphaBlending();
+	people.allocate(width, height);
+	particlesDormant.allocate(width, height);
+	particles.allocate(width, height);
 
 // font needs to be loaded before the particles are created because they all use it to draw
 	myFont.loadFont("verdana.ttf", (int) 8 * fromKinectWidth);
@@ -320,13 +322,19 @@ void testApp::update() {
 //--------------------------------------------------------------
 void testApp::draw() {
 
+	people.begin();
+	ofClear(0, 0, 0, 0);
 	if (USE_KINECT) {
 //		drawKinect();
 		drawAllUserMask();
 	}
+	people.end();
 
+	particlesDormant.begin();
+	ofClear(0, 0, 0, 0);
 	ofSetColor(255, 255, 255, 100);
 	physics.draw();
+	particlesDormant.end();
 	if (doVideoWrite) {
 
 #ifdef DO_VIDEO
@@ -342,7 +350,9 @@ void testApp::draw() {
 		saveScreen.grabScreen(0,0,width,height);
 		TIS.saveThreaded(saveScreen);
 #endif
-
+		particlesDormant.draw(0, 0, width, height);
+		people.draw(0, 0, width, height);
+		particles.draw(0, 0, width, height);
 	}
 
 }
@@ -605,7 +615,7 @@ void testApp::drawAllUserMask() {
 //	glEnable(GL_BLEND);
 	ofScale(fromKinectWidth, fromKinectHeight, 0);
 //	glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
-	allUserMasks.draw(0, 0, 0);
+	allUserMasks.draw(0, 0);
 //	depthRangeMask.draw(0, 0, width, height);
 //	glDisable(GL_BLEND);
 	ofPopMatrix();

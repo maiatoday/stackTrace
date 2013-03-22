@@ -124,6 +124,10 @@ public:
 	ofImage allUserMasks, user1Mask, user2Mask, depthRangeMask;
 
 	float filterFactor;
+	//------------------------ Framebuffer stuff
+	ofFbo particlesDormant;
+	ofFbo people;
+	ofFbo particles;
 
 };
 
