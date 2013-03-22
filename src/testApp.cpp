@@ -473,6 +473,16 @@ void testApp::keyPressed(int key) {
 		screenImg.grabScreen(0, 0, w, h);
 		screenImg.saveImage("screenshot-" + ofToString(snapCounter) + ".png");
 
+		if (FRAME_BUFFER_SPLIT) {
+			string name = "people";
+			snapFrameBuffer(name, people, snapCounter);
+			name = "versions";
+			snapFrameBuffer(name, versions, snapCounter);
+			name = "branches";
+			snapFrameBuffer(name, branches, snapCounter);
+			name = "particles";
+			snapFrameBuffer(name, particlesDormant, snapCounter);
+		}
 		snapCounter++;
 		break;
 	}
@@ -666,5 +676,14 @@ void testApp::drawAllVersion() {
 			StreamMote *p = static_cast<StreamMote*>(physics.getParticle(i));
 			p->drawText();
 	}
+}
+
+
+void testApp::snapFrameBuffer(string& name, ofFbo& fb, int count){
+	//get the frame buffer pixels
+	ofPixels pixels;
+	    fb.readToPixels(pixels);
+	    //save
+	    ofSaveImage(pixels, name +"-" + ofToString(count) + ".png");
 }
 

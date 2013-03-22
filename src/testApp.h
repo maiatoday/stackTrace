@@ -133,6 +133,7 @@ public:
 	void drawAllparticles();
 	void drawAllBranches();
 	void drawAllVersion();
+	void snapFrameBuffer(string& name, ofFbo& fb, int count);
 
 };
 
