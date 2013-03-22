@@ -125,7 +125,7 @@ void Turtle::moveForward()
     float newY = y + (sin(ofDegToRad(curAngle))*length);
 
     //cout << "move forward from: " << x << ", " << y << " to " << newX << ", " << newY << endl;
-    ofEnableAlphaBlending();
+//    ofEnableAlphaBlending();
 //	ofSetColor(0, 0, 0, 120);
     ofSetColor(myColor.r, myColor.g, myColor.b, myColor.a*fadeFactor);
     ofSetLineWidth(2);

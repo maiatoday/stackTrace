@@ -236,6 +236,7 @@ void testApp::setup() {
 		moteCount = XML.getValue("ROOM:MOTE_COUNT", START_MOTE_COUNT);
 		fullscreen = (XML.getValue("ROOM:FULLSCREEN", 1) == 1) ? true : false;
 		USE_KINECT = (XML.getValue("ROOM:KINECT", 1) == 1) ? true : false;
+		FRAME_BUFFER_SPLIT = (XML.getValue("ROOM:FRAME_BUFFER_SPLIT", 1) == 1) ? true : false;
 	}
 	if (USE_KINECT) {
 		setupKinect();
@@ -257,10 +258,15 @@ void testApp::setup() {
 	ofSetFullscreen(fullscreen);
 	ofHideCursor();
 	setScreenRatios();
-	ofEnableAlphaBlending();
-	people.allocate(width, height);
-	particlesDormant.allocate(width, height);
-	particles.allocate(width, height);
+	if (FRAME_BUFFER_SPLIT) {
+		ofEnableBlendMode(OF_BLENDMODE_SCREEN);
+		people.allocate(width, height);
+		particlesDormant.allocate(width, height);
+		branches.allocate(width, height);
+		versions.allocate(width, height);
+	} else {
+		ofEnableAlphaBlending();
+	}
 
 // font needs to be loaded before the particles are created because they all use it to draw
 	myFont.loadFont("verdana.ttf", (int) 8 * fromKinectWidth);
@@ -296,8 +302,8 @@ void testApp::setup() {
 //                 size);
 #endif
 	snapCounter = 0;
-	width = ofGetWidth();
-	height = ofGetHeight();
+//	width = ofGetWidth();
+//	height = ofGetHeight();
 }
 
 //--------------------------------------------------------------
@@ -308,9 +314,6 @@ void testApp::update() {
 
 	XnUInt16 nUsersPrev = numberUsers;
 	ofSetWindowTitle(ofToString(ofGetFrameRate()));
-//#ifndef NO_KINECT
-//    oni.update();
-//#endif
 	//========================
 
 	updateParticles();
@@ -321,21 +324,43 @@ void testApp::update() {
 
 //--------------------------------------------------------------
 void testApp::draw() {
+	if (FRAME_BUFFER_SPLIT) {
+		people.begin();
+		ofClear(0, 0, 0, 0);
+		if (USE_KINECT) {
+			drawAllUserMask();
+		}
+		people.end();
 
-//	people.begin();
-//	ofClear(0, 0, 0, 0);
-	if (USE_KINECT) {
-//		drawKinect();
-		drawAllUserMask();
-	}
-//	people.end();
+		particlesDormant.begin();
+		ofClear(0, 0, 0, 0);
+		ofSetColor(255, 255, 255, 100);
+		drawAllparticles();
+		particlesDormant.end();
 
-//	particlesDormant.begin();
-//	ofClear(0, 0, 0, 0);
-	ofSetColor(255, 255, 255, 100);
-	physics.draw();
-//	particlesDormant.end();
-	if (doVideoWrite) {
+		branches.begin();
+		ofClear(0, 0, 0, 0);
+		ofSetColor(255, 255, 255, 100);
+		drawAllBranches();
+		branches.end();
+
+		versions.begin();
+		ofClear(0, 0, 0, 0);
+		ofSetColor(255, 255, 255, 100);
+		drawAllVersion();
+		versions.end();
+
+		versions.draw(0, 0);
+		branches.draw(0, 0);
+		particlesDormant.draw(0, 0);
+		people.draw(0, 0);
+	} else {
+		if (USE_KINECT) {
+			drawAllUserMask();
+		}
+		ofSetColor(255, 255, 255, 100);
+		physics.draw();
+		if (doVideoWrite) {
 
 #ifdef DO_VIDEO
 
@@ -347,12 +372,11 @@ void testApp::draw() {
 //        colorImg.setFromPixels(saveScreen.getPixels(), cameraWidth,cameraHeight);
 //        cvCvtColor(colorImg.getCvImage(), tempImg, CV_RGB2BGR);
 //        cvWriteFrame(writer,tempImg);
-		saveScreen.grabScreen(0,0,width,height);
-		TIS.saveThreaded(saveScreen);
+			saveScreen.grabScreen(0,0,width,height);
+			TIS.saveThreaded(saveScreen);
 #endif
-//		particlesDormant.draw(0, 0);
-//		people.draw(0, 0);
-//		particles.draw(0, 0);
+		}
+
 	}
 
 }
@@ -522,7 +546,7 @@ void testApp::setupKinect() {
 	ofBackground(0, 0, 0);
 
 	recordContext.setup();	// all nodes created by code -> NOT using the xml config file at all
-	//recordContext.setupUsingXMLFile();
+//recordContext.setupUsingXMLFile();
 	recordDepth.setup(&recordContext);
 	recordImage.setup(&recordContext);
 
@@ -542,20 +566,20 @@ void testApp::setupKinect() {
 
 }
 void testApp::updateKinect() {
-	// update all nodes
+// update all nodes
 	recordContext.update();
 	recordDepth.update();
 	recordImage.update();
 
-	// demo getting depth pixels directly from depth gen
+// demo getting depth pixels directly from depth gen
 	depthRangeMask.setFromPixels(recordDepth.getDepthPixels(nearThreshold, farThreshold), recordDepth.getWidth(),
 			recordDepth.getHeight(), OF_IMAGE_GRAYSCALE);
 
-	// update tracking/recording nodes
+// update tracking/recording nodes
 	if (isTracking)
 		recordUser.update();
 
-	// demo getting pixels from user gen
+// demo getting pixels from user gen
 	if (isTracking && isMasking) {
 		allUserMasks.setFromPixels(recordUser.getUserPixels(), recordUser.getWidth(), recordUser.getHeight(),
 				OF_IMAGE_GRAYSCALE);
@@ -621,5 +645,26 @@ void testApp::drawAllUserMask() {
 	ofPopMatrix();
 	ofPopStyle();
 
+}
+
+void testApp::drawAllparticles() {
+	for (unsigned int i = 0; i < physics.numberOfParticles(); i++) {
+			StreamMote *p = static_cast<StreamMote*>(physics.getParticle(i));
+			p->drawTails();
+			p->drawDormant();
+	}
+}
+void testApp::drawAllBranches() {
+	for (unsigned int i = 0; i < physics.numberOfParticles(); i++) {
+			StreamMote *p = static_cast<StreamMote*>(physics.getParticle(i));
+			p->drawBranches();
+	}
+}
+
+void testApp::drawAllVersion() {
+	for (unsigned int i = 0; i < physics.numberOfParticles(); i++) {
+			StreamMote *p = static_cast<StreamMote*>(physics.getParticle(i));
+			p->drawText();
+	}
 }
 

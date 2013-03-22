@@ -101,6 +101,7 @@ public:
 
 	//------------------ kinect methods and variables
 	bool USE_KINECT;
+	bool FRAME_BUFFER_SPLIT;
 	void setupKinect();
 	void updateKinect();
 	void drawKinect();
@@ -127,7 +128,11 @@ public:
 	//------------------------ Framebuffer stuff
 	ofFbo particlesDormant;
 	ofFbo people;
-	ofFbo particles;
+	ofFbo branches;
+	ofFbo versions;
+	void drawAllparticles();
+	void drawAllBranches();
+	void drawAllVersion();
 
 };
 
